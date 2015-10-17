@@ -11,17 +11,24 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
+#include <string>
 #include <time.h>
+
+#define EPSILON 0.000001
+
+using std::cout;
+using std::cin;
+using std::string;
 
 int main(int argc, char* argv [])
 {
-	Vector org(0,0,0), dir(0,0,1);
-	Ray ray(org,dir);
-	Color color(5.0, 5.0, 5.0, 5.0);
-	Sphere sphere(org, 2, color);
+	string file_name = "image.prop";
+	if ( argc < 2 )
+		cout << "Default file name: image.prop\n";
+	else
+		file_name = argv[1];
 
-	std::cout << ray.getDirection().getX() ;
-
-	system("pause");
+	string c;
+	cin >> c;
 	return 0;
 }

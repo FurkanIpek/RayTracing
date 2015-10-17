@@ -34,5 +34,5 @@ double Sphere::findIntersection(Ray& ray)
 		return root_1 > 0 ? root_1 : root_2;
 	}
 
-	return -1;
+	return 0;
 }

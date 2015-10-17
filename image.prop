@@ -1,24 +1,12 @@
-ImageWidth, Image Height
-Vmin Vmax (min max distances of viewing frustum (float)
-Ray_Reflection
-maximum ray reflection (int)
-Camera parameters  Camera(Vector pos, Vector dir, Vector r, Vector dn)
-Material Parameters
-Triangle Parameters
-Sphere Parameters
-Light Parameters
-Ambient Parameters
-Background Color
-
 640 480 # width - height
 50.00 500.00 # Vmin - Vmax
 3 # Ray_Reflection
 5 # max ray reflection
-3 1.5 -4 # others will be calculated depending on this value
+3 1.5 -4 # Camera parameters - others will be calculated depending on this value
  # Material parameters???
-100 100 200 red # x y z and color
-200 200 200 50 # x,y,z and r
-300 200 300 white # x,y,z and color
+100 100 200 red # Triangle params - x y z and color
+200 200 200 50 # Sphere params - x,y,z and r
+300 200 300 white # Light params - x,y,z and color
 0.2 # ambient
 gray # background color
  
