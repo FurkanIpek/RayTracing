@@ -3,8 +3,15 @@
 
 #include "Vector.h"
 
-typedef struct {
+class Ray {
+private:
 	Vector origin, direction;
-} Ray;
+
+public:
+	Ray(Vector origin, Vector direction) : origin(origin), direction(direction) {}
+
+	Vector getOrigin() { return origin; }
+	Vector getDirection() { return direction; }
+};
 
 #endif

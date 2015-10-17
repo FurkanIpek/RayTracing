@@ -1,22 +1,25 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-typedef struct {
-	double x, y, z;
-} Vector;
-	
-double magnitude (Vector* vect);
-	
-Vector normalize (Vector* vect);
-	
-Vector negative (Vector* vect);
-	
-double dotProduct(Vector* vect, Vector* v);
-	
-Vector crossProduct(Vector* vect, Vector* v);
-	
-Vector VectorAdd (Vector* vect, Vector* v);
+class Vector {
 
-Vector VectorMult (Vector* vect, double scalar);
+private:
+	double x, y, z;
+
+public:
+	Vector();
+	Vector(double, double, double);
+
+	double getX();
+	double getY();
+	double getZ();
+	double Magnitude();
+	Vector Normalize();
+	Vector Negative();
+	double DotProduct(Vector&);
+	Vector CrossProduct(Vector&);
+	Vector VectorAdd(Vector&);
+	Vector VectorMult(double);
+};
 
 #endif
