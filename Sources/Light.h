@@ -10,6 +10,7 @@ private:
 	Color color;
 
 public:
+	Light();
 	Light(Vector p, Color c) : position(p), color(c) {}
 
 	Vector getPosition() { return position; }

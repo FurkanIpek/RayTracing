@@ -11,6 +11,7 @@ private:
 	double radius;
 	Color color;
 public:
+	Sphere();
 	Sphere(Vector, double, Color);
 
 	Color getColor() { return color; }

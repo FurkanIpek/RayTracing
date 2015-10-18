@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <string>
+
 class Color {
 private:
 	double red, green, blue, special;
@@ -24,6 +26,8 @@ public:
 	Color colorMultiply(Color color);
 	Color colorAverage(Color color);
 	Color clip();
+
+	static Color DetectColor(std::string, double);
 
 };
 

@@ -59,3 +59,23 @@ Color Color::clip()
 		
 	return Color (red, green, blue, special);
 }
+
+Color Color::DetectColor(std::string str, double alpha)
+{
+	if ( str == "red" )
+		return Color(204, 20, 30, alpha);
+	else if ( str == "white" )
+		return Color(255, 255, 255, alpha);
+	else if ( str == "black" )
+		return Color(0, 0, 0, alpha);
+	else if ( str == "gray" )
+		return Color(64, 64, 64, alpha);
+	else if ( str == "green" )
+		return Color(20, 204, 30, alpha);
+	else if ( str == "blue" )
+		return Color(30, 20, 204, alpha);
+	else if ( str == "purple" )
+		return Color(153, 0, 153, alpha);
+	else if ( str == "floor" )
+		return Color(102, 51, 0, alpha);
+}

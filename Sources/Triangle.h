@@ -13,6 +13,7 @@ private:
 	Vector edge_1, edge_2;
 
 public:
+	Triangle();
 	Triangle(Vector a, Vector b, Vector c, Color color);
 
 	Color getColor() { return color; }

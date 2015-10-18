@@ -1,20 +1,10 @@
-#include "Camera.h"
-#include "Color.h"
-#include "Light.h"
-#include "Object.h"
-#include "Plane.h"
-#include "Ray.h"
-#include "Sphere.h"
-#include "Vector.h"
+#include "Sources/FileHandler.h"
+#include "Sources/ImageRender.h"
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <math.h>
 #include <string>
 #include <time.h>
-
-#define EPSILON 0.000001
 
 using std::cout;
 using std::cin;
@@ -28,7 +18,22 @@ int main(int argc, char* argv [])
 	else
 		file_name = argv[1];
 
+	FileHandler* f_handler = new FileHandler(file_name);
+
+	ImageRender render_machine(*f_handler);
+
+	clock_t t1, t2;
+	t1 = clock();
+
+	render_machine.Render();
+	t2 = clock();
+	float diff = ((float)t2 - (float)t1)/1000;
+	std::cout << "Total time elapsed while rendering: " << diff ;
+
 	string c;
 	cin >> c;
+
+	delete f_handler;
+
 	return 0;
 }

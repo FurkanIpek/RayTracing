@@ -9,20 +9,22 @@
 
 class FileHandler {
 
-private:
+public:
 	std::string file_name;
 	int width, height; // image width & height
 	double Vmin, Vmax; // z coor of the front & the end of scene to be rendered
 	int ray_reflx, max_ray_reflx; // ray reflection
 	double cx, cy, cz; // camera parameters
 	// TODO material parameters
-	double tx, ty, tz;
-	double sx, sy, sz;
-	double lx, ly, lz;
+	double tx1, tx2, tx3, ty1, ty2, ty3, tz1, tz2, tz3, ta; // triangle x, y, z & alpha values
+	Color tri_c; // triangle color
+	double sx, sy, sz, sa, sr; // sphere x, y, z, alpha & radius
+	Color sphere_c; // sphere color
+	double lx, ly, lz, la; // light source x, y, z, alpha(0)
+	Color light_c; // light color
 	double ambient;
-	Color color;
+	Color background;
 
-public:
 	FileHandler(std::string fn) : file_name(fn) { ReadFile(); }
 
 	void ReadFile();
