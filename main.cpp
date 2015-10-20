@@ -27,6 +27,7 @@ int main(int argc, char* argv [])
 
 	render_machine.Render();
 	t2 = clock();
+
 	float diff = ((float)t2 - (float)t1)/1000;
 	std::cout << "Total time elapsed while rendering: " << diff ;
 

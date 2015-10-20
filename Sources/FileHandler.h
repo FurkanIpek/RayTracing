@@ -27,6 +27,7 @@ public:
 
 	FileHandler(std::string fn) : file_name(fn) { ReadFile(); }
 
+private:
 	void ReadFile();
 };
 

@@ -17,10 +17,13 @@
 #include <string>
 #include <time.h>
 
+typedef enum ObjType { plane_o, triangle_o, sphere_o, none };
+
 class ImageRender {
 
 private:
-	double* image;
+
+	int* image;
 
 	FileHandler fh; // holds all values read from file
 	Camera* camera;
@@ -28,6 +31,14 @@ private:
 	Sphere* sphere;
 	Triangle* triangle;
 	Plane* plane;
+
+	Ray ComputeRay(int, int);
+	void FindIntersections(Ray&);
+	ObjType FindNearestObj();
+	void RayTrace(Ray, ObjType);
+	void SetBlack(int, int);
+	Color GetColor(Ray, ObjType);
+	void CheckReflection();
 
 public:
 	ImageRender(FileHandler& fh);

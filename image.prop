@@ -7,6 +7,6 @@
 50 50 200    100 100 160    50 100 225    100 red # Triangle params - a b c alpha and color
 200 200 200   60   50 purple # Sphere params - x,y,z,alpha, r and color
 300 200 300   0 white # Light params - x,y,z alpha and color
-0.2 # ambient
+51 # ambient
 gray # background color
  

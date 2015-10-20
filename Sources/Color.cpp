@@ -2,65 +2,65 @@
 
 Color::Color()
 {
-	red = 0.0;
-	green = 0.0;
-	blue = 0.0;
-	special = 0.0;
+	red = 0;
+	green = 0;
+	blue = 0;
+	alpha = 0;
 }
 
-Color::Color(double r, double g, double b, double s)
+Color::Color(int r, int g, int b, int s)
 {
 	red = r;
 	green = g;
 	blue = b;
-	special = s;
+	alpha = s;
 }
 
-double Color::brightness() 
+int Color::brightness() 
 {
 	return(red + green + blue)/3;
 }
 	
-Color Color::colorScalar(double scalar)
+Color Color::colorScalar(int scalar)
 {
-	return Color (red*scalar, green*scalar, blue*scalar, special);
+	return Color (red*scalar, green*scalar, blue*scalar, alpha);
 }
 	
 Color Color::colorAdd(Color color) 
 {
-	return Color (red + color.getRed(), green + color.getGreen(), blue + color.getBlue(), special);
+	return Color (red + color.getRed(), green + color.getGreen(), blue + color.getBlue(), alpha);
 }
 	
 Color Color::colorMultiply(Color color)
 {
-	return Color (red*color.getRed(), green*color.getGreen(), blue*color.getBlue(), special);
+	return Color (red*color.getRed(), green*color.getGreen(), blue*color.getBlue(), alpha);
 }
 	
 Color Color::colorAverage(Color color) 
 {
-	return Color ((red + color.getRed())/2, (green + color.getGreen())/2, (blue + color.getBlue())/2, special);
+	return Color ((red + color.getRed())/2, (green + color.getGreen())/2, (blue + color.getBlue())/2, alpha);
 }
 
 Color Color::clip()
 {
-	double alllight = red + green + blue;
-	double excesslight = alllight - 3;
+	int alllight = red + green + blue;
+	int excesslight = alllight - 255;
 	if (excesslight > 0) {
 		red = red + excesslight*(red/alllight);
 		green = green + excesslight*(green/alllight);
 		blue = blue + excesslight*(blue/alllight);
 	}
-	if (red > 1) {red = 1;}
-	if (green > 1) {green = 1;}
-	if (blue > 1) {blue = 1;}
+	if (red > 255) {red = 255;}
+	if (green > 255) {green = 255;}
+	if (blue > 255) {blue = 255;}
 	if (red < 0) {red = 0;}
 	if (green < 0) {green = 0;}
 	if (blue < 0) {blue = 0;}
 		
-	return Color (red, green, blue, special);
+	return Color (red*255, green*255, blue*255, alpha);
 }
 
-Color Color::DetectColor(std::string str, double alpha)
+Color Color::DetectColor(std::string str, int alpha)
 {
 	if ( str == "red" )
 		return Color(204, 20, 30, alpha);
@@ -78,4 +78,6 @@ Color Color::DetectColor(std::string str, double alpha)
 		return Color(153, 0, 153, alpha);
 	else if ( str == "floor" )
 		return Color(102, 51, 0, alpha);
+
+	return Color(0, 204, 204, alpha);
 }
