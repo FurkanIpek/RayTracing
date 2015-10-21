@@ -13,9 +13,10 @@
 #include "FileHandler.h"
 #include "ImageRender.h"
 
+#include "../Resources/tiffio.h"
+
 #include <math.h>
-#include <string>
-#include <time.h>
+#include <vector>
 
 typedef enum ObjType { plane_o, triangle_o, sphere_o, none };
 
@@ -23,7 +24,8 @@ class ImageRender {
 
 private:
 
-	int* image;
+	unsigned char* image;
+	TIFF* tif;
 
 	FileHandler fh; // holds all values read from file
 	Camera* camera;
@@ -32,12 +34,14 @@ private:
 	Triangle* triangle;
 	Plane* plane;
 
+	void SetTiffHeaders();
+	void WriteImageToTiff();
 	Ray ComputeRay(int, int);
-	void FindIntersections(Ray&);
-	ObjType FindNearestObj();
-	void RayTrace(Ray, ObjType);
+	void FindIntersections(Ray&, std::vector<double>&);
+	ObjType FindNearestObj(std::vector<double>&);
+	void RayTrace(int, int, Ray&, ObjType);
 	void SetBlack(int, int);
-	Color GetColor(Ray, ObjType);
+	Color GetColor(Ray&, ObjType, double);
 	void CheckReflection();
 
 public:

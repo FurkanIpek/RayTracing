@@ -29,7 +29,7 @@ int main(int argc, char* argv [])
 	t2 = clock();
 
 	float diff = ((float)t2 - (float)t1)/1000;
-	std::cout << "Total time elapsed while rendering: " << diff ;
+	std::cout << "Total time elapsed while rendering: " << diff  << std::endl;
 
 	string c;
 	cin >> c;

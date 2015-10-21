@@ -57,7 +57,7 @@ Color Color::clip()
 	if (green < 0) {green = 0;}
 	if (blue < 0) {blue = 0;}
 		
-	return Color (red*255, green*255, blue*255, alpha);
+	return Color (red, green, blue, alpha);
 }
 
 Color Color::DetectColor(std::string str, int alpha)
