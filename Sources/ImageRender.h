@@ -18,8 +18,6 @@
 #include <math.h>
 #include <vector>
 
-typedef enum ObjType { plane_o, triangle_o, sphere_o, none };
-
 class ImageRender {
 
 private:
@@ -36,12 +34,12 @@ private:
 
 	void SetTiffHeaders();
 	void WriteImageToTiff();
-	Ray ComputeRay(int, int);
-	void FindIntersections(Ray&, std::vector<double>&);
-	ObjType FindNearestObj(std::vector<double>&);
-	void RayTrace(int, int, Ray&, ObjType);
+	Ray ComputeRay(double, double);
+	void FindIntersections(Ray&, std::vector<Object*>&);
+	Object* FindNearestObj(Ray&, std::vector<Object*>&);
+	void RayTrace(int, int, Ray&, Object*);
 	void SetBlack(int, int);
-	Color GetColor(Ray&, ObjType, double);
+	Color GetColor(Ray&, Object*);
 	void CheckReflection();
 
 public:

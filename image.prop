@@ -1,12 +1,12 @@
 640 480 # width - height
-50.00 500.00 # Vmin - Vmax
+0 12 # Vmin - Vmax
 3 # Ray_Reflection
 5 # max ray reflection
 3 1.5 -4 # Camera parameters - others will be calculated depending on this value
  # Material parameters???
-50 50 200    100 100 160    50 100 225    100 red # Triangle params - a b c alpha and color
-200 200 200   60   50 purple # Sphere params - x,y,z,alpha, r and color
-300 200 300   0 white # Light params - x,y,z alpha and color
+1 1 -1    1 2 -2    3 3 -2   3 purple # Triangle params - a b c alpha and color 
+2 2 2   100   2  white # Sphere params - x,y,z,alpha, r and color
+-7 10 -10   0  gray # Light params - x,y,z alpha and color
 1.5 # ambient
 gray # background color
  
