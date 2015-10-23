@@ -18,6 +18,8 @@
 #include <math.h>
 #include <vector>
 
+using std::vector;
+
 class ImageRender {
 
 private:
@@ -28,19 +30,18 @@ private:
 	FileHandler fh; // holds all values read from file
 	Camera* camera;
 	Light* light;
-	Sphere* sphere;
-	Triangle* triangle;
-	Plane* plane;
+	vector<Sphere*> spheres;
+	vector<Triangle*> triangles;
+	vector<Plane*> planes;
 
 	void SetTiffHeaders();
 	void WriteImageToTiff();
 	Ray ComputeRay(double, double);
-	void FindIntersections(Ray&, std::vector<Object*>&);
-	Object* FindNearestObj(Ray&, std::vector<Object*>&);
+	void FindIntersections(Ray&, vector<Object*>&);
+	Object* FindNearestObj(Ray&, vector<Object*>&);
 	void RayTrace(int, int, Ray&, Object*);
 	void SetBlack(int, int);
-	Color GetColor(Ray&, Object*);
-	void CheckReflection();
+	Color GetColor(Ray&, Object*, int&);
 
 public:
 	ImageRender(FileHandler& fh);

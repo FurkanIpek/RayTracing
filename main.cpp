@@ -30,10 +30,10 @@ int main(int argc, char* argv [])
 
 	float diff = ((float)t2 - (float)t1)/1000;
 	std::cout << "Total time elapsed while rendering: " << diff  << std::endl;
-
+	/*
 	string c;
 	cin >> c;
-
+	*/
 	delete f_handler;
 
 	return 0;

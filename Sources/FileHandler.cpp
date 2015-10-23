@@ -47,6 +47,15 @@ void FileHandler::ReadFile()
 		stream.str(line);
 		stream >> sx >> sy >> sz >> sa >> sr >> color_str;
 		sphere_c = Color::DetectColor(color_str, sa);
+		Sphere* sphere = new Sphere(Vector(sx, sy, sz), sr, sphere_c);
+		spheres.push_back(sphere);
+
+		getline(reader, line);
+		stream.str(line);
+		stream >> sx >> sy >> sz >> sa >> sr >> color_str;
+		sphere_c = Color::DetectColor(color_str, sa);
+		Sphere* sphere2 = new Sphere(Vector(sx, sy, sz), sr, sphere_c);
+		spheres.push_back(sphere2);
 
 		getline(reader, line);
 		stream.str(line);
@@ -62,4 +71,10 @@ void FileHandler::ReadFile()
 		stream >> color_str;
 		background = Color::DetectColor(color_str, 0);
 	}
+}
+
+FileHandler::~FileHandler()
+{
+	/*for ( int i = 0; i < spheres.size(); i++ )
+		delete spheres.at(i);*/
 }

@@ -5,29 +5,30 @@
 
 class Color {
 private:
-	int red, green, blue, alpha;
+	int red, green, blue;
+	double alpha;
 
 public:
 	Color();
-	Color (int, int, int, int);
+	Color (int, int, int, double);
 	int getRed() { return red; }
 	int getGreen() { return green; }
 	int getBlue() { return blue; }
-	int getAlpha() { return alpha; }
+	double getAlpha() { return alpha; }
 	
 	int setRed(int redValue) { red = redValue; }
 	int setGreen(int greenValue) { green = greenValue; }
 	int setBlue(int blueValue) { blue = blueValue; }
-	int setAlpha(int alphaValue) { alpha = alphaValue; }
+	double setAlpha(double alphaValue) { alpha = alphaValue; }
 	
 	int brightness();
-	Color colorScalar(int scalar);
+	Color colorScalar(double scalar);
 	Color colorAdd(Color color);
 	Color colorMultiply(Color color);
 	Color colorAverage(Color color);
 	Color clip();
 
-	static Color DetectColor(std::string, int);
+	static Color DetectColor(std::string, double);
 
 };
 

@@ -2,14 +2,21 @@
 #define FILE_HANDLER_H
 
 #include "Color.h"
+#include "Sphere.h"
 
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
+
+using std::vector;
 
 class FileHandler {
 
-public:
+private:
+
+	vector<Sphere*> spheres;
+
 	std::string file_name;
 	int width, height; // image width & height
 	double Vmin, Vmax; // z coor of the front & the end of scene to be rendered
@@ -25,10 +32,15 @@ public:
 	double ambient;
 	Color background;
 
-	FileHandler(std::string fn) : file_name(fn) { ReadFile(); }
-
-private:
 	void ReadFile();
+
+public:
+	FileHandler(std::string fn) : file_name(fn) { ReadFile(); }
+	~FileHandler();
+
+
+friend class ImageRender;
+	
 };
 
 #endif

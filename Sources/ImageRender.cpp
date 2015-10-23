@@ -9,11 +9,13 @@
 
 ImageRender::ImageRender(FileHandler& fh) : fh(fh)
 {
-	Vector Y (0,1,0);
+	Vector X(1, 0, 0);
+	Vector Y(0, 1, 0);
+	Vector Z(0, 0, 1);
 
 	Vector cam_pos(fh.cx, fh.cy, fh.cz);
 	Vector cam_dir = cam_pos.Negative().Normalize();
-	Vector cam_right = Y.CrossProduct(cam_dir).Normalize();
+	Vector cam_right = X.CrossProduct(cam_dir).Normalize();
 	Vector cam_down = cam_right.CrossProduct(cam_dir);
 
 	camera = new Camera(cam_pos, cam_dir, cam_right, cam_down);
@@ -21,11 +23,19 @@ ImageRender::ImageRender(FileHandler& fh) : fh(fh)
 	Vector light_pos(fh.lx, fh.ly, fh.lz);
 	light = new Light(light_pos, fh.light_c);
 
-	sphere = new Sphere(Vector(fh.sx, fh.sy, fh.sz), fh.sr, fh.sphere_c);
+	spheres = fh.spheres;
 	
-	plane = new Plane(Y, -1, Color::DetectColor("floor", 100));
+	Plane* floor = new Plane(Y, -1, Color::DetectColor("white", 0));
+	//Plane* zz = new Plane(Z, -fh.Vmax, Color::DetectColor("black", 0));
+	//Plane* right = new Plane(X.Negative(), -1, Color::DetectColor("gray", 0));
+	Plane* back = new Plane(Y.Negative(), -fh.Vmax, Color::DetectColor("wall", 0));
+	planes.push_back(floor);
+	planes.push_back(back);
+	//planes.push_back(zz);
+	//planes.push_back(right);
 
-	triangle = new Triangle(Vector(fh.tx1, fh.ty1, fh.tz1), Vector(fh.tx2, fh.ty2, fh.tz2), Vector(fh.tx3, fh.ty3, fh.tz3), fh.tri_c);
+	Triangle* triangle = new Triangle(Vector(fh.tx1, fh.ty1, fh.tz1), Vector(fh.tx2, fh.ty2, fh.tz2), Vector(fh.tx3, fh.ty3, fh.tz3), fh.tri_c);
+	triangles.push_back(triangle);
 
 	image = new unsigned char [fh.height*fh.width*3];
 
@@ -45,7 +55,7 @@ void ImageRender::SetTiffHeaders()
 	TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 	TIFFSetField(tif, TIFFTAG_XRESOLUTION, 150.0);
 	TIFFSetField(tif, TIFFTAG_YRESOLUTION, 150.0);
-	TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, 0);
+	TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, 1);
 }
 
 void ImageRender::WriteImageToTiff()
@@ -58,11 +68,11 @@ void ImageRender::Render()
 {
 	SetTiffHeaders();
 
-	int aadepth = 1, ctr = 0;
+	int aadepth = 1;
 	double xamnt, yamnt;
 
 	double aspectratio = (double)fh.width/(double)fh.height;
-
+	Color color = Color::DetectColor("purple", 0);
 	std::vector<Object*> intersections;
 	
 	for ( int x = 0; x < fh.height; x++ )
@@ -78,15 +88,12 @@ void ImageRender::Render()
 
 			Object* nearest = FindNearestObj(ray, intersections);
 
-			if ( nearest != nullptr )
-				ctr++;
-
 			RayTrace(x, y, ray, nearest);
-
+			
 			intersections.clear();
 		}
 	}
-	std::cout << ctr << " " ;
+	
 	WriteImageToTiff();
 }
 
@@ -102,14 +109,17 @@ Ray ImageRender::ComputeRay(double xamnt, double yamnt)
 
 void ImageRender::FindIntersections(Ray& ray, std::vector<Object*>& intersections)
 {
-	double pd = plane->findIntersection(ray);
-	if ( pd > EPSILON ) intersections.push_back(plane);
+	for ( int i = 0; i < planes.size(); i++ )
+		if( planes.at(i)->findIntersection(ray) > EPSILON )
+			intersections.push_back(planes.at(i));
 
-	double td = triangle->findIntersection(ray);
-	if ( td > EPSILON ) intersections.push_back(triangle);
+	for ( int i = 0; i < triangles.size(); i++ )
+		if( triangles.at(i)->findIntersection(ray) > EPSILON )
+			intersections.push_back(triangles.at(i));
 
-	double sd = sphere->findIntersection(ray);
-	if ( sd > EPSILON ) intersections.push_back(sphere);
+	for ( int i = 0; i < spheres.size(); i++ )
+		if( spheres.at(i)->findIntersection(ray) > EPSILON )
+			intersections.push_back(spheres.at(i));
 }
 
 Object* ImageRender::FindNearestObj(Ray& ray, std::vector<Object*>& intersections)
@@ -124,14 +134,9 @@ Object* ImageRender::FindNearestObj(Ray& ray, std::vector<Object*>& intersection
 			nearest = intersections.at(i);
 		}
 
-	double cur_min = cur_max;
-
 	for ( int i = 0; i < intersections.size(); i++ )
 		if ( intersections.at(i)->findIntersection(ray) > 0 && intersections.at(i)->findIntersection(ray) < cur_max )
-		{
-			cur_min = intersections.at(i)->findIntersection(ray);
 			nearest = intersections.at(i);
-		}
 
 	return nearest;
 }
@@ -139,20 +144,19 @@ Object* ImageRender::FindNearestObj(Ray& ray, std::vector<Object*>& intersection
 void ImageRender::RayTrace(int x, int y, Ray& ray, Object* nearest)
 {
 	Color color;
+	int max_reflection = fh.max_ray_reflx;
 
 	if ( nearest != nullptr )
-		color = GetColor(ray, nearest);
+		color = GetColor(ray, nearest, max_reflection);
 	else
-		color = Color::DetectColor("black", 128);
+		color = Color::DetectColor("black", 128).colorAdd(light->getColor().colorScalar(fh.ambient).clip());
 	
 	image[(x*fh.width*3)+y] = color.getRed();
 	image[(x*fh.width*3)+y+1] = color.getGreen();
 	image[(x*fh.width*3)+y+2] = color.getBlue();
-
-	CheckReflection();
 }
 
-Color ImageRender::GetColor(Ray& ray, Object* nearest)
+Color ImageRender::GetColor(Ray& ray, Object* nearest, int& max_reflection)
 {
 	Color color = nearest->getColor().colorScalar(fh.ambient);
 	Vector intr_pos = ray.getOrigin().VectorAdd(ray.getDirection().VectorMult(nearest->findIntersection(ray))),
@@ -166,7 +170,7 @@ Color ImageRender::GetColor(Ray& ray, Object* nearest)
 	Vector add2 = intr_ray_dir.Negative().VectorAdd(scalar2);
 	Vector reflection_direction = add2.Normalize();
 
-	Ray reflection_ray (intr_pos, reflection_direction);
+	Ray reflection_ray(intr_pos, reflection_direction);
 	
 	std::vector<Object*> refl_intersections;
 
@@ -174,9 +178,9 @@ Color ImageRender::GetColor(Ray& ray, Object* nearest)
 
 	Object* reflectedObj = FindNearestObj(reflection_ray, refl_intersections);
 
-	if ( reflectedObj != nullptr )
+	if ( reflectedObj != nullptr && max_reflection != 0 )
 	{
-		Color to_add = GetColor(reflection_ray, reflectedObj);
+		Color to_add = GetColor(reflection_ray, reflectedObj, --max_reflection);
 		color = color.colorAdd(to_add.colorScalar(nearest->getColor().getAlpha()));
 	}
 
@@ -184,7 +188,7 @@ Color ImageRender::GetColor(Ray& ray, Object* nearest)
 
 	float cos_angle = normal.DotProduct(light_dir);
 
-	/*if ( cos_angle > 0 )
+	if ( cos_angle > 0 )
 	{
 		bool shadowed = false;
 
@@ -193,33 +197,55 @@ Color ImageRender::GetColor(Ray& ray, Object* nearest)
 
 		Ray shadow_ray (intr_pos, distance_to_light);
 			
-		std::vector<double> secondary_intersections;
+		std::vector<Object*> secondary_intersections;
 			
-		for (int object_index = 0; object_index < scene_objects.size() && shadowed == false; object_index++) {
-			secondary_intersections.push_back(scene_objects.at(object_index)->findIntersection(shadow_ray));
-		}
+		FindIntersections(shadow_ray, secondary_intersections);
 			
 		for (int c = 0; c < secondary_intersections.size(); c++) {
-			if (secondary_intersections.at(c) > accuracy) {
-				if (secondary_intersections.at(c) <= distance_to_light_magnitude) {
+			if (secondary_intersections.at(c)->findIntersection(shadow_ray) > EPSILON) {
+				if (secondary_intersections.at(c)->findIntersection(shadow_ray) <= distance_to_light_magnitude) {
 					shadowed = true;
 				}
 			}
 			break;
 		}
 
-	}*/
+		if (shadowed == false)
+		{
+			color = color.colorAdd(nearest->getColor().colorMultiply(light->getColor().colorScalar(cos_angle)));
+				
+			double dot1 = normal.DotProduct(intr_ray_dir.Negative());
+			Vector scalar1 = normal.VectorMult(dot1);
+			Vector add1 = scalar1.VectorAdd(intr_ray_dir);
+			Vector scalar2 = add1.VectorMult(2);
+			Vector add2 = intr_ray_dir.Negative().VectorAdd(scalar2);
+			Vector reflection_direction = add2.Normalize();
+					
+			double specular = reflection_direction.DotProduct(light_dir);
+			if (specular > 0) 
+			{
+				specular = pow(specular, 10);
+				color = color.colorAdd(light->getColor().colorScalar(specular*nearest->getColor().getAlpha()));
+			}
+				
+		}
+
+	}
 	
 	return color.clip();
-}
-
-void ImageRender::CheckReflection()
-{
-	// TODO check reflection
 }
 
 ImageRender::~ImageRender()
 {
 	TIFFClose(tif);
-	delete camera, light, sphere, triangle, plane;
+	delete camera, light;
+
+	for ( int i = 0; i < planes.size(); i++ )
+		delete planes.at(i);
+
+	for ( int i = 0; i < triangles.size(); i++ )
+		delete triangles.at(i);
+
+	for ( int i = 0; i < spheres.size(); i++ )
+		delete spheres.at(i);
 }
